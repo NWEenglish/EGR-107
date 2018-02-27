@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1516206682 source:c:\users\nicholas\onedrive\school\2017 - 2018 academic year\winter semester\egr107\egr107_sec006_english_assignment1\egr107_sec006_english_assignment1\main.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+
