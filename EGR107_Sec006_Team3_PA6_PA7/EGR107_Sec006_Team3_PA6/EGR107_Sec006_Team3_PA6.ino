@@ -1,12 +1,16 @@
-int LMSpeed = 55;
-int RMSpeed = 60;
 
-int postDelay = 41;
+/* Global Variable(s) */
+int LMSpeed = 105;
+int RMSpeed = 110;
+int postDelay = 40;
 int turn = 1;         // 0 = left, 1 = right
 
+/* Function declaration(s) */
 int trackerDetection();
 void stopMotor();
-void moveMotor();
+void moveForward();
+void moveForward2();
+void reverseMotor();
 int checkLeftFWD();
 int checkRightFWD();
 
@@ -28,6 +32,13 @@ void setup() {
 
   // Delay before moving
   delay(2000);
+
+  // Initial Movement
+  moveForward2();
+  delay(1500);
+  stopMotor();
+  reverseMotor();
+  delay(1500);
 }
 
 /* Loop function */
@@ -43,22 +54,19 @@ void loop() {
     
     if(turn == 1) {
       if(checkLeftFWD());
-      //else if(checkRightBack());
       else if(checkRightFWD());
-      //else if(checkLeftBack());
-      //else
-        //reverseMotor();
       turn = 0;
     }
 
     else if (turn == 0) {
       if(checkRightFWD());
-      //else if(checkLeftBack());
       else if(checkLeftFWD());
-      //else if(checkRightBack());
-      //else
-        //reverseMotor();
       turn = 1;
+    }
+
+    if( !trackerDetection() ) {
+      reverseMotor();
+
     }
 
     stopMotor();
@@ -90,13 +98,30 @@ void moveForward() {
     digitalWrite(10, LOW);
 }
 
+/*********************************************************************
+ *  Move forward2 function
+ ********************************************************************/
+void moveForward2() {
+    int i;
+  
+  Serial.println("Moving Forwards!");
+
+    // Right Motor
+    analogWrite(6, RMSpeed - 40 );
+    digitalWrite(7, LOW);
+    digitalWrite(8, HIGH);
+
+    // Left Motor
+    analogWrite(11, LMSpeed - 40 );
+    digitalWrite(9, HIGH);
+    digitalWrite(10, LOW);
+}
 /********************************************************************
 *  Stop motor function
 ********************************************************************/
 void stopMotor() {
   
   Serial.println("Stopping motor!");
-  analogWrite(6,0); //Controls a PWM signal on pin 6
 
   // Right Motor
   analogWrite(6,0); //Controls a PWM signal on pin 6
@@ -104,7 +129,7 @@ void stopMotor() {
   digitalWrite(8, LOW);
 
   // Left Motor
-  analogWrite(11,0); //Controls a PWM signal on pin 6
+  analogWrite(11,0); //Controls a PWM signal on pin 11
   digitalWrite(9, LOW);
   digitalWrite(10, LOW);
 
@@ -115,17 +140,11 @@ void stopMotor() {
  *  Functions for Tracker Sensor
  ********************************************************************/
 int trackerDetection() {
-
-  //Serial.println(digitalRead(12));
-
   if ( digitalRead(12) == HIGH )
     return 0;   // Has not detected
 
   else if(digitalRead(12) == LOW)
     return 1;   // Has detected
-
-  else
-    return 2;
 }
 
 /*********************************************************************
@@ -139,16 +158,16 @@ void reverseMotor() {
   while( !trackerDetection() ) {
 
     // Right Motor
-    analogWrite(6,RMSpeed + 10); //Controls a PWM signal on pin 6
+    analogWrite(6, 200);  //Controls a PWM signal on pin 6
     digitalWrite(7, HIGH);
     digitalWrite(8, LOW);
   
     // Left Motor
-    analogWrite(11,LMSpeed); //Controls a PWM signal on pin 6
+    analogWrite(11,200);      //Controls a PWM signal on pin 11
     digitalWrite(9, LOW);
     digitalWrite(10, HIGH);
   
-    delay(20);
+    delay(1000);
     
     stopMotor();
 
