@@ -10,8 +10,8 @@
 *********************************************************************/
 
 /* Function Declaration(s) */
-void stopMotors();
-void moveForward();
+void stopMotors();      // DONE 
+void moveForward();     // DONE
 void reverseMotors();
 void turnRight();
 void turnLeft();
@@ -26,9 +26,12 @@ int left1 = 9;
 int left2 = 10;
 int leftPWM = 11;
 
+/********************************************************************
+*  Setup function
+********************************************************************/
 void setup() {
 
-  /* Initialize serial communication */
+  // Initialize serial communication
   Serial.begin(9600);
 
   // Setup for right motor
@@ -46,6 +49,47 @@ void setup() {
 
 }
 
+/********************************************************************
+*  Loop function
+********************************************************************/
 void loop() {
 
+}
+
+/*********************************************************************
+ *  Move forward function
+ ********************************************************************/
+void moveForward() {
+  
+  Serial.println("Moving Forwards!");
+
+    // Right Motor
+    analogWrite(rightPWM, RMSpeed );
+    digitalWrite(right1, LOW);
+    digitalWrite(right2, HIGH);
+
+    // Left Motor
+    analogWrite(leftPWM, LMSpeed );
+    digitalWrite(left1, HIGH);
+    digitalWrite(left2, LOW);
+}
+
+/********************************************************************
+*  Stop motor function
+********************************************************************/
+void stopMotors() {
+  
+  Serial.println("Stopping motor!");
+
+  // Right Motor
+  analogWrite(rightPWM,0); //Controls a PWM signal on pin 6
+  digitalWrite(right1, LOW);
+  digitalWrite(right2, LOW);
+
+  // Left Motor
+  analogWrite(leftPWM,0); //Controls a PWM signal on pin 6
+  digitalWrite(left1, LOW);
+  digitalWrite(left2, LOW);
+
+  delay(1000);
 }
