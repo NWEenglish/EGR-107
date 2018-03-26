@@ -1,5 +1,4 @@
 /*********************************************************************
-*
 * Author: Nicholas English
 * Course: EGR-107-006
 * Date of Completion: 3/14/2018
@@ -9,7 +8,6 @@
 * Description: Part one of three requirements for the assignment. This
 *	program holds the necessary information to control the motors of
 *	the robot.
-*
 *********************************************************************/
 
 /* #define speeds */
