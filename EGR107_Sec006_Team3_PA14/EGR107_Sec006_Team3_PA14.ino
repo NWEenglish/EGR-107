@@ -9,22 +9,36 @@
 *   competition.
 *********************************************************************/
 
+#include "EGR107_Sec006_Team3_PA14.h"
+
+/* Used for Calibration */
+#include <Servo.h>
+#include <QTRSensors.h>
+Servo servo;
+QTRSensorsRC qtr((char[]) {linePin1,linePin2,linePin3,linePin4,linePin5}, 5);
+
+/* Gate positions */
+#define opened 90
+#define closed 0
+
 /* Function Declaration(s) */
-void stopMotors();      // DONE 
-void moveForward();     // DONE
+void stopMotors();
+void moveForward();
 void reverseMotors();
 void turnRight();
 void turnLeft();
 
+/* Creates an object of type Robot */
+struct Robot robot;
+
 /* Global Variable(s) */
-int LMSpeed = 200;
-int RMSpeed = 200;
 int rightPWM = 6;
 int right1 = 7;
 int right2 = 8;
 int left1 = 9;
 int left2 = 10;
 int leftPWM = 11;
+bool haveBall = false;
 
 /********************************************************************
 *  Setup function
@@ -35,17 +49,41 @@ void setup() {
   Serial.begin(9600);
 
   // Setup for right motor
-  pinMode(rightPWM, OUTPUT);
-  pinMode(right1, OUTPUT);
-  pinMode(right2, OUTPUT);
+  pinMode(RIGHT_PWM_PIN, OUTPUT);
+  pinMode(RIGHT_IN1_PIN, OUTPUT);
+  pinMode(RIGHT_IN2_PIN, OUTPUT);
 
   // Setup for left motor
-  pinMode(left1, OUTPUT);
-  pinMode(left2, OUTPUT);
-  pinMode(leftPWM, OUTPUT);
+  pinMode(LEFT_IN1_PIN, OUTPUT);
+  pinMode(LEFT_IN2_PIN, OUTPUT);
+  pinMode(LEFT_PWM_PIN, OUTPUT);
+
+
+
+  // Setup servo (starts closed)
+  servo.attach(A0);
+  servo.write(closed);
+
+  // Setup ultrasonic sensor
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  // Setup IR disance sensor
+  pinMode(A0, INPUT);
+
+  // Setup line following array
+  pinMode(linePin1, INPUT);
+  pinMode(linePin2, INPUT);
+  pinMode(linePin3, INPUT);
+  pinMode(linePin4, INPUT);
+
+  
 
   // Delay before movement
   delay(2000);
+
+  // Open gate
+  servo.write(opened);
 
 }
 
@@ -54,42 +92,86 @@ void setup() {
 ********************************************************************/
 void loop() {
 
-}
 
-/*********************************************************************
- *  Move forward function
- ********************************************************************/
-void moveForward() {
-  
-  Serial.println("Moving Forwards!");
+  /***********************
+  * FIND_BALL     - X
+  * DETECT_OBJ    - X
+  * IS_BALL       - X
+  * AVD_OBJ       - DONE
+  * FIND_GOAL     - X
+  * SCR_BALL      - DONE
+  ***********************/
+  switch(robot.currentState) {
+    case FIND_BALL:
 
-    // Right Motor
-    analogWrite(rightPWM, RMSpeed );
-    digitalWrite(right1, LOW);
-    digitalWrite(right2, HIGH);
+    break;
+    case DETECT_OBJ:
 
-    // Left Motor
-    analogWrite(leftPWM, LMSpeed );
-    digitalWrite(left1, HIGH);
-    digitalWrite(left2, LOW);
+    break;
+    case IS_BALL:
+    
+      if(isBall() == true)
+        robot.currentState = FIND_GOAL;
+
+      else
+        robot.currentState = AVD_OBJ;
+
+    break;
+    case AVD_OBJ:
+      reverseMotors();
+      turnRight();
+      robot.currentState = FIND_BALL;
+
+    break;
+    case FIND_GOAL:
+
+      findGoal();
+
+      if(isGoal() == true)
+        robot.currentState = SCR_BALL;
+
+    break;
+    case SCR_BALL:
+      scoreBall();
+      reverseMotors();
+      turnRight();
+      turnRight();
+      robot.currentState = FIND_BALL;
+
+  }
 }
 
 /********************************************************************
-*  Stop motor function
+*  isBall function
 ********************************************************************/
-void stopMotors() {
-  
-  Serial.println("Stopping motor!");
 
-  // Right Motor
-  analogWrite(rightPWM,0); //Controls a PWM signal on pin 6
-  digitalWrite(right1, LOW);
-  digitalWrite(right2, LOW);
-
-  // Left Motor
-  analogWrite(leftPWM,0); //Controls a PWM signal on pin 6
-  digitalWrite(left1, LOW);
-  digitalWrite(left2, LOW);
-
+/********************************************************************
+*  Score ball function
+********************************************************************/
+void scoreBall() {
+  // Open gate
+  servo1.write(opened);
   delay(1000);
+
+  // Move back
+  reverseMotors();
+  delay(1000);
+
+  // Stop
+  stopMotors();
+  delay(500);
+
+  // Close gate
+  servo1.write(closed);
+  delay(1000);
+
+  // Move forward
+  moveForward();
+  delay(1000);
+
+  // Idea: move forward untill all line follower sensors read black.
+  
 }
+
+
+
