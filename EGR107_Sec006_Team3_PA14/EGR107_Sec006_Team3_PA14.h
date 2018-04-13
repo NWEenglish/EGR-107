@@ -11,33 +11,36 @@
 
 /* #define speeds */
 #define NORMAL_SPEED 150
-#define RMSpeed 150
-#define LMSpeed 150
+#define RM_SPEED 150
+#define LM_SPEED 150
 
 /* #define times */
 #define TURN_240_NORM_TIME	// Normal 240* turn
 #define TURN_240_RVRS_TIME	// Reversed 240* turn.
 
 /* #define for right motor */
-#define RIGHT_PWM_PIN 6
-#define RIGHT_IN1_PIN 7
-#define RIGHT_IN2_PIN 8
+#define RIGHT_PWM_PIN 11
+#define RIGHT_IN1_PIN 13
+#define RIGHT_IN2_PIN 12
 
 /* #define for left motor */
-#define LEFT_PWM_PIN 11
-#define LEFT_IN1_PIN 9
-#define LEFT_IN2_PIN 10
+#define LEFT_PWM_PIN 10
+#define LEFT_IN1_PIN 8
+#define LEFT_IN2_PIN 9
 
-// Ultrasonic sensor
-#define trigPin 0
-#define echoPin 1
+/* #define for servo */
+#define SERVO_PIN 5
+
+/* Ultrasonic sensor */
+#define TRIG_PIN 7
+#define ECHO_PIN 6
 
 // Line following array
-#define linePin1 2
-#define linePin2 3
-#define linePin3 4
-#define linePin4 5
-#define linePin5 6
+#define LINE_PIN1 0
+#define LINE_PIN2 1
+#define LINE_PIN3 2
+#define LINE_PIN4 3
+#define LINE_PIN5 4
 
 /* Function Declarations */
 // Movement
@@ -48,7 +51,6 @@ void turnRight();
 void turnLeft();
 void slightRight();
 void slightLeft();
-
 
 // Sensors
 double ultrasonic();
@@ -90,15 +92,16 @@ void stopMotors() {
   Serial.println("Stopping motor!");
 
   // Right Motor
-  analogWrite(RIGHT_PWM_PIN,0); //Controls a PWM signal on pin 6
+  analogWrite(RIGHT_PWM_PIN,0);
   digitalWrite(RIGHT_IN1_PIN, LOW);
   digitalWrite(RIGHT_IN2_PIN, LOW);
 
   // Left Motor
-  analogWrite(LEFT_PWM_PIN,0); //Controls a PWM signal on pin 6
+  analogWrite(LEFT_PWM_PIN,0);
   digitalWrite(LEFT_IN1_PIN, LOW);
   digitalWrite(LEFT_IN2_PIN, LOW);
 
+  // Wait to stop
   delay(500);
 }
 
@@ -110,12 +113,12 @@ void moveForward() {
     Serial.println("Moving Forwards!");
 
     // Right Motor
-    analogWrite(RIGHT_PWM_PIN, RMSpeed );
+    analogWrite(RIGHT_PWM_PIN, RM_SPEED );
     digitalWrite(RIGHT_IN1_PIN, LOW);
     digitalWrite(RIGHT_IN2_PIN, HIGH);
 
     // Left Motor
-    analogWrite(LEFT_PWM_PIN, LMSpeed );
+    analogWrite(LEFT_PWM_PIN, LM_SPEED );
     digitalWrite(LEFT_IN1_PIN, HIGH);
     digitalWrite(LEFT_IN2_PIN, LOW);
 }
@@ -128,12 +131,12 @@ void reverseMotors() {
     Serial.println("Reversing!");
 
     // Right Motor
-    analogWrite(RIGHT_PWM_PIN, RMSpeed);
+    analogWrite(RIGHT_PWM_PIN, RM_SPEED);
     digitalWrite(RIGHT_IN1_PIN, HIGH);
     digitalWrite(RIGHT_IN2_PIN, LOW);
 
     // Left Motor
-    analogWrite(LEFT_PWM_PIN, LMSpeed);
+    analogWrite(LEFT_PWM_PIN, LM_SPEED);
     digitalWrite(LEFT_IN1_PIN, LOW);
     digitalWrite(LEFT_IN2_PIN, HIGH);
 }
@@ -151,7 +154,7 @@ void reverseMotors() {
     digitalWrite(RIGHT_IN2_PIN, HIGH);
 
     // Left motor
-    analogWrite(LEFT_PWM_PIN, LMSpeed);
+    analogWrite(LEFT_PWM_PIN, LM_SPEED);
     digitalWrite(LEFT_IN1_PIN, HIGH);
     digitalWrite(LEFT_IN2_PIN, LOW);
  }
@@ -164,7 +167,7 @@ void reverseMotors() {
     Serial.println("Turning Left!");
 
     // Right motor
-    analogWrite(RIGHT_PWM_PIN, RMSpeed);
+    analogWrite(RIGHT_PWM_PIN, RM_SPEED);
     digitalWrite(RIGHT_IN1_PIN, LOW);
     digitalWrite(RIGHT_IN2_PIN, HIGH);
 
@@ -182,12 +185,12 @@ void slightRight() {
     Serial.println("Slight Right Turn!");
 
     // Right motor
-    analogWrite(RIGHT_PWM_PIN, 0.25*RMSpeed);
+    analogWrite(RIGHT_PWM_PIN, 0.25*RM_SPEED);
     digitalWrite(RIGHT_IN1_PIN, LOW);
     digitalWrite(RIGHT_IN2_PIN, HIGH);
 
     // Left motor
-    analogWrite(LEFT_PWM_PIN, 0.5*LMSpeed);
+    analogWrite(LEFT_PWM_PIN, 0.5*LM_SPEED);
     digitalWrite(LEFT_IN1_PIN, HIGH);
     digitalWrite(LEFT_IN2_PIN, LOW);
 }
@@ -200,12 +203,12 @@ void slightLeft() {
     Serial.println("Slight left Turn!");
 
     // Right motor
-    analogWrite(RIGHT_PWM_PIN, 0.5*RMSpeed);
+    analogWrite(RIGHT_PWM_PIN, 0.5*RM_SPEED);
     digitalWrite(RIGHT_IN1_PIN, LOW);
     digitalWrite(RIGHT_IN2_PIN, HIGH);
 
     // Left motor
-    analogWrite(LEFT_PWM_PIN, 0.25*LMSpeed);
+    analogWrite(LEFT_PWM_PIN, 0.25*LM_SPEED);
     digitalWrite(LEFT_IN1_PIN, HIGH);
     digitalWrite(LEFT_IN2_PIN, LOW);
 }
@@ -225,14 +228,14 @@ double ultrasonic() {
     double dist = 0;
 
     // send out ultra sonic wave
-    digitalWrite(trigPin, HIGH);
+    digitalWrite(TRIG_PIN, HIGH);
     delayMicroseconds(10);
-    digitalWrite(trigPin, LOW);
+    digitalWrite(TRIG_PIN, LOW);
 
     time1 = micros();
 
     // wait for echo
-    while(digitalRead(echoPin) == 0){
+    while(digitalRead(ECHO_PIN) == 0){
 
         //timeout of loop if no objects are detected in range
         tempTime = micros();
@@ -244,7 +247,7 @@ double ultrasonic() {
 
     // measure how long echo pin was HIGH for
     time1 = micros();
-    while(digitalRead(echoPin) == 1){
+    while(digitalRead(ECHO_PIN) == 1){
 
     }
     time2 = micros();
@@ -271,7 +274,7 @@ double ultrasonic() {
  ********************************************************************/
 double IRdistance() {
     // read value from IR sensor
-    double volt = analogRead(A1);
+    double volt = analogRead(A0);
 
     // linearize and convert voltage to distance in cm
     double dist = (6787.0/(volt - 3.0)) - 4.0;
@@ -279,10 +282,6 @@ double IRdistance() {
     // return distance in cm
     return dist;
 }
-
-
-
-
 
 
 

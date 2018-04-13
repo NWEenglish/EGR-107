@@ -1,5 +1,5 @@
 /*********************************************************************
-* Author: Team 3
+* Author: Team 3 
 * Course: EGR-107-006
 * Date of Completion: IN_PROGRESS
 * Program Name: EGR107_Sec006_Team3_PA14.h
@@ -15,29 +15,25 @@
 #include <Servo.h>
 #include <QTRSensors.h>
 Servo servo;
-QTRSensorsRC qtr((char[]) {linePin1,linePin2,linePin3,linePin4,linePin5}, 5);
+QTRSensorsRC qtr((char[]) {LINE_PIN1,LINE_PIN2,LINE_PIN3,LINE_PIN4,LINE_PIN5}, 5);
 
 /* Gate positions */
-#define opened 90
-#define closed 0
+#define OPENED 90
+#define CLOSED 0
 
 /* Function Declaration(s) */
+/*
 void stopMotors();
 void moveForward();
 void reverseMotors();
 void turnRight();
 void turnLeft();
+*/
 
 /* Creates an object of type Robot */
 struct Robot robot;
 
 /* Global Variable(s) */
-int rightPWM = 6;
-int right1 = 7;
-int right2 = 8;
-int left1 = 9;
-int left2 = 10;
-int leftPWM = 11;
 bool haveBall = false;
 
 /********************************************************************
@@ -61,29 +57,29 @@ void setup() {
 
 
   // Setup servo (starts closed)
-  servo.attach(A0);
-  servo.write(closed);
+  servo.attach(SERVO_PIN);
+  servo.write(CLOSED);
 
   // Setup ultrasonic sensor
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
 
   // Setup IR disance sensor
   pinMode(A0, INPUT);
 
   // Setup line following array
-  pinMode(linePin1, INPUT);
-  pinMode(linePin2, INPUT);
-  pinMode(linePin3, INPUT);
-  pinMode(linePin4, INPUT);
-
+  pinMode(LINE_PIN1, INPUT);
+  pinMode(LINE_PIN2, INPUT);
+  pinMode(LINE_PIN3, INPUT);
+  pinMode(LINE_PIN4, INPUT);
+  pinMode(LINE_PIN5, INPUT);
   
 
   // Delay before movement
   delay(2000);
 
   // Open gate
-  servo.write(opened);
+  servo.write(OPENED);
 
 }
 
@@ -150,7 +146,7 @@ void loop() {
 ********************************************************************/
 void scoreBall() {
   // Open gate
-  servo1.write(opened);
+  servo1.write(OPENED);
   delay(1000);
 
   // Move back
@@ -162,7 +158,7 @@ void scoreBall() {
   delay(500);
 
   // Close gate
-  servo1.write(closed);
+  servo1.write(CLOSED);
   delay(1000);
 
   // Move forward
